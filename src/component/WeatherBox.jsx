@@ -9,24 +9,32 @@ const WeatherBox = ({ weather, hourlyWeather }) => {
   const weatherDescription = weather?.weather[0].description;
 
   // 날씨 타입별 이미지 매칭
-  const weatherImages = {
-    Clear: "/images/sunny2.jpg",
-    Clouds: "/images/cloud.jpg",
-    Rain: "/images/rain.jpg",
-    Snow: "/images/snow.jpg",
-    Drizzle: "/images/rain.jpg",
-    Thunderstorm: "/images/rain.jpg",
-    Mist: "/images/cloud.jpg",
-    Squall: "/images/windy.jpg",
+  const weatherDataMap = {
+    Clear: { image: "/images/sunny2.jpg", emoji: "☀️" },
+    Clouds: { image: "/images/cloud.jpg", emoji: "☁️" },
+    Rain: { image: "/images/rain.jpg", emoji: "🌧️" },
+    Snow: { image: "/images/snow.jpg", emoji: "☃️" },
+    Drizzle: { image: "/images/rain.jpg", emoji: "🌧️" },
+    Thunderstorm: { image: "/images/rain.jpg", emoji: "🌧️" },
+    Mist: { image: "/images/cloud.jpg", emoji: "🌧️" },
+    Fog: { image: "/images/cloud.jpg", emoji: "☁️" },
+    Squall: { image: "/images/windy.jpg", emoji: "☁️" },
   };
 
-  const weatherImage = weatherImages[weatherType] || "/images/default.jpg";
+  const weatherData = weatherDataMap[weatherType] || {
+    image: "/images/default.jpg",
+    emoji: "🌈",
+  };
 
   return (
     <div className="weahter-box">
       <div className="weather-image-box">
         <div className="weather-image-circle">
-          <img className="weather-image" src={weatherImage} alt={weatherType} />
+          <img
+            className="weather-image"
+            src={weatherData.image}
+            alt={weatherType}
+          />
         </div>
       </div>
 
@@ -59,9 +67,12 @@ const WeatherBox = ({ weather, hourlyWeather }) => {
         <div className="hourly-weather-row">
           {hourlyWeather.map((item, index) => {
             const hour = new Date(item.dt * 1000).getHours();
+            const hourlyType = item.weather[0].main;
+            const hourlyData = weatherDataMap[hourlyType] || { emoji: "🌈" };
             return (
               <div className="hourly-item" key={index}>
                 <div className="hour">{hour}시</div>
+                <div className="emoji">{hourlyData.emoji}</div>
                 <div className="temp">{Math.round(item.main.temp)}°</div>
               </div>
             );
