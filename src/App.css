@@ -15,10 +15,13 @@
     box-shadow: none;
   }
 
+  div.weather-container {
+    padding: 12px 0px 0px 0px;
+  }
+
   div.weather-image-circle {
     width: 280px;
     height: 280px;
-    margin-top: 40px;
   }
 
   div.weather-info {
