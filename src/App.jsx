@@ -4,6 +4,7 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import WeatherBox from "./component/WeatherBox.jsx";
 import WeatherButton from "./component/WeatherButton.jsx";
+import Spinner from "react-bootstrap/Spinner";
 
 // 앱이 실행되자마자 현재 위치 기반의 날씨 정보
 // 날씨 정보에는 도시, 온도, 날씨 상태
@@ -15,11 +16,24 @@ import WeatherButton from "./component/WeatherButton.jsx";
 function App() {
   const [weather, setWeather] = useState(null);
   const [currentDate, setCurrentDate] = useState("");
+  const [hourlyWeather, setHourlyWeather] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [city, setCity] = useState("");
+  const cities = [
+    { name: "내 위치", value: "current" },
+    { name: "서울", value: "seoul" },
+    { name: "부산", value: "busan" },
+    { name: "제주", value: "jeju" },
+    { name: "인천", value: "incheon" },
+    { name: "대구", value: "daegu" },
+    { name: "울산", value: "ulsan" },
+    { name: "수원", value: "suwon" },
+    { name: "창원", value: "changwon" },
+    { name: "전주", value: "jeonju" },
+    { name: "고양", value: "goyang" },
+  ];
 
-  useEffect(() => {
-    getCurrentLocation();
-    setCurrentDate(getFormattedDate());
-  }, []);
+  let apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
   // 현재 위치 가져오는 함수
   const getCurrentLocation = () => {
@@ -33,11 +47,43 @@ function App() {
 
   // 현재 위치 기반 날씨 API 호출
   const getWeatherByCurrentLocation = async (lat, lon) => {
-    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=316bf0cb911a9b7cfce077ac5b715da7&units=metric&lang=kr`;
+    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=kr`;
+    setLoading(true);
     let response = await fetch(url);
     let data = await response.json();
     console.log(data);
     setWeather(data);
+    setLoading(false);
+    getHourlyWeather(lat, lon);
+  };
+
+  // 도시별 날씨 API 호출
+  const getWeatherByCity = async () => {
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=kr`;
+    setLoading(true);
+    let response = await fetch(url);
+    let data = await response.json();
+    setWeather(data);
+    getHourlyWeather(data.coord.lat, data.coord.lon);
+    setLoading(false);
+    console.log(data);
+  };
+
+  // 시간별 출력 함수
+  const getHourlyWeather = async (lat, lon) => {
+    let url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=kr`;
+    let response = await fetch(url);
+    let data = await response.json();
+
+    // 오늘 날짜 문자열 추출
+    const today = new Date().toISOString().split("T")[0];
+
+    // '오늘'에 해당하는 시간대만 필터링
+    const todayForecast = data.list.filter((item) =>
+      item.dt_txt.startsWith(today)
+    );
+
+    setHourlyWeather(todayForecast.slice(0, 8));
   };
 
   const getFormattedDate = () => {
@@ -45,6 +91,16 @@ function App() {
     const options = { month: "long", day: "numeric", weekday: "long" };
     return date.toLocaleDateString("ko-KR", options);
   };
+
+  useEffect(() => {
+    if (city === "") {
+      getCurrentLocation();
+      setCurrentDate(getFormattedDate());
+    } else {
+      getWeatherByCity();
+      setCurrentDate(getFormattedDate());
+    }
+  }, [city]);
 
   return (
     <div className="main-container">
@@ -55,11 +111,19 @@ function App() {
         </div>
         <div className="date">{currentDate}</div>
         <div className="weather-btn">
-          <WeatherButton />
+          <WeatherButton cities={cities} setCity={setCity} />
         </div>
       </div>
       <div className="weather-container">
-        <WeatherBox weather={weather} />
+        {loading ? (
+          <Spinner animation="border" role="status"></Spinner>
+        ) : (
+          <WeatherBox
+            weather={weather}
+            setCity={setCity}
+            hourlyWeather={hourlyWeather}
+          />
+        )}
       </div>
     </div>
   );

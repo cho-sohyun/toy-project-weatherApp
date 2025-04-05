@@ -2,6 +2,66 @@
   font-family: "GmarketSansMedium", system-ui, Helvetica, Arial, sans-serif;
 }
 
+@media screen and (max-width: 480px) {
+  .main-container {
+    width: 95%;
+    height: auto;
+    max-height: none;
+    min-height: auto;
+    position: static;
+    transform: none;
+    border-radius: 12px;
+    margin: 20px auto;
+    box-shadow: none;
+  }
+
+  .weather-container {
+    padding: 16px;
+  }
+
+  .weather-image-circle {
+    width: 180px;
+    height: 180px;
+  }
+
+  .weather-cards {
+    padding: 0;
+  }
+
+  .weather-card {
+    padding: 10px;
+    flex: 0 0 100px;
+    max-width: 100px;
+  }
+
+  .hourly-weather-row {
+    gap: 10px;
+  }
+
+  .hourly-item {
+    flex: 0 0 60px;
+    min-width: 60px;
+    font-size: 12px;
+  }
+
+  .hour {
+    font-size: 11px;
+  }
+
+  .city-button-group {
+    gap: 6px;
+  }
+
+  .city-button {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+
+  .city-name,
+  .date {
+    font-size: 14px;
+  }
+}
 .main-container {
   display: flex;
   flex-direction: column;
@@ -25,7 +85,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.5rem;
+  padding: 0.8rem 1rem;
   background-color: #f8f9fa;
   border-bottom: 1px solid #ddd;
 }
@@ -38,7 +98,7 @@
 }
 
 .city-name {
-  font-size: 16px;
+  font-size: 12px;
   color: #007bff;
 }
 
@@ -48,9 +108,26 @@
   font-size: 16px;
   font-weight: normal;
 }
-.weather-btn {
+
+.button-title {
+  text-align: center;
+}
+
+.city-button-group {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.city-button {
+  border-radius: 20px !important;
+  padding: 8px 16px;
+}
+
+.city-button.selected {
+  background-color: #0d6efd !important;
+  color: white !important;
 }
 
 .weather-container {
@@ -75,15 +152,15 @@
 }
 
 .weather-image-circle {
-  width: 250px;
-  height: 250px;
+  width: 240px;
+  height: 240px;
   border-radius: 50%;
-  border: 2px solid white;
+  border: 3px solid white;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
 }
 
 .weather-image {
@@ -94,11 +171,11 @@
 
 .weather-info {
   width: 100%;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .temperature {
-  font-size: 50px;
+  font-size: 40px;
   font-weight: bold;
   color: #333;
   text-align: center;
@@ -111,51 +188,82 @@
   text-align: center;
 }
 
-.weather-details {
+.weather-cards {
   display: flex;
   justify-content: center;
-  margin-top: 40px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+  padding: 0 5px;
+  gap: 10px;
+}
+
+.weather-card {
+  background-color: white;
+  border-radius: 20px;
+  padding: 12px 14px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   font-size: 14px;
-  color: #666;
-  width: 100%;
-}
-
-.details-left,
-.details-right {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 48%;
-}
-
-.detail {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 0;
-}
-
-.divider {
-  width: 1px;
-  background-color: #ddd;
-  margin: 0 30px;
-}
-
-.cold-title {
-  padding-top: 5px;
 }
 
 .cold {
   color: #0099ff;
   font-weight: bold;
-  font-size: 20px;
-}
-
-.hot-title {
-  padding-top: 5px;
+  font-size: 16px;
 }
 
 .hot {
   color: #ff4444;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 16px;
+}
+
+.weather-card span {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  color: #483d8b;
+}
+
+.hourly-weather-wrapper {
+  background-color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.hourly-title {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.hourly-weather-row {
+  display: flex;
+  overflow-x: auto;
+  gap: 16px;
+  padding-bottom: 5px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hourly-weather-row::-webkit-scrollbar {
+  display: none;
+}
+
+.hourly-item {
+  flex: 0 0 calc(100% / 6);
+  min-width: unset;
+  text-align: center;
+  font-size: 13px;
+  color: #333;
+}
+
+.hour {
+  margin-bottom: 4px;
+  color: #888;
 }
