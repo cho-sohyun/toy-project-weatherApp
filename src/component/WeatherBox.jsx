@@ -1,6 +1,9 @@
 import React from "react";
 
 const WeatherBox = ({ weather, hourlyWeather }) => {
+  if (!weather || !weather.main || !weather.weather) {
+    return <div>날씨 정보를 불러오는 중입니다.</div>;
+  }
   // API에서 받아오는 날씨 상태
   const weatherType = weather?.weather[0].main;
   const weatherDescription = weather?.weather[0].description;
